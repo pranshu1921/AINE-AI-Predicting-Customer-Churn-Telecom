@@ -1,0 +1,47 @@
+# Pre-commit hooks configuration
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Ruff - Fast Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      # Linter - catches errors, unused imports, etc.
+      - id: ruff
+        args: [--fix]
+      # Formatter - consistent code style (replaces black)
+      - id: ruff-format
+
+  # General file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Removes trailing whitespace
+      - id: trailing-whitespace
+      # Ensures files end with a newline
+      - id: end-of-file-fixer
+      # Validates YAML syntax
+      - id: check-yaml
+        args: [--unsafe]  # Allow custom tags
+      # Validates TOML syntax
+      - id: check-toml
+      # Prevents large files from being committed
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      # Checks for merge conflict markers
+      - id: check-merge-conflict
+      # Validates JSON syntax
+      - id: check-json
+      # Prevents committing to main/master directly
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, master]
+
+  # Security checks
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      # Prevents secrets from being committed
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package.lock.json
